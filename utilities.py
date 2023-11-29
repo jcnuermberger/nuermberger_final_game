@@ -43,12 +43,3 @@ def add_bullets(num_bullet, pos, angle):
         bullets.add(Bullet(pos[0],pos[1], angle))
 def add_bottles(shelf_num):
     bottles.add(Bottle(shelf_num))
-
-
-    # bottle = pygame.image.load("../assets/sprites/bottle.png").convert()
-    # if shelf_num == 1:
-    #     bottles.draw(screen,1)
-    # elif shelf_num == 2:
-    #     bottles.add(Bottle(SCREEN_WIDTH - 2 * bottle.get_width(), SCREEN_HEIGHT - (187+125)))
-    # elif shelf_num == 3:
-    #     bottles.add(Bottle(SCREEN_WIDTH - 2 * bottle.get_width(), SCREEN_HEIGHT - (187+250)))

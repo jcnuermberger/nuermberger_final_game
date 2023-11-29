@@ -2,8 +2,8 @@ import pygame
 import sys
 from game_parameters import *
 from utilities import draw_background, add_bullets, add_bottles
-from bullet import Bullet,bullets
-from targets import Bottle, bottles
+from bullet import bullets
+from targets import bottles
 
 pygame.init()
 
@@ -25,6 +25,8 @@ pygame.time.set_timer(timer_event, 1000)
 
 # initialize sounds
 gunshot = pygame.mixer.Sound("../assets/sounds/gunshot.mp3")
+bottle_break = pygame.mixer.Sound("../assets/sounds/bottle_break.mp3")
+background_music = pygame.mixer.Sound('../assets/sounds/background.mp3')
 bottle = pygame.image.load("../assets/sprites/bottle.png").convert()
 bottle.set_colorkey((255,255,255))
 
@@ -37,6 +39,7 @@ running = True
 while running:
     # set frame speed
     clock.tick(60)
+    pygame.mixer.Sound.play(background_music)
     for event in pygame.event.get():
         if event.type == pygame.event.get():
             running = False
@@ -48,7 +51,7 @@ while running:
             if event.key == pygame.K_SPACE:
                 pos = (100,450)
                 add_bullets(1, pos, angle)
-                # pygame.mixer.Sound.play(gunshot)
+                pygame.mixer.Sound.play(gunshot)
         elif event.type == timer_event:
             counter -= 1
             text = main_font.render(str(counter), True, (0,0,0))
@@ -56,24 +59,19 @@ while running:
                 running = False
     # draw the background
     screen.blit(background, (0, 0))
+
     # draw timer
     screen.blit(text, (10,0))
+
     # update objects
     bullets.update()
+
     # draw objects
     for bullet in bullets:
         bullet.draw_bullet(screen)
 
     # draw bottles on shelves
     for bottle in bottles:
-        # bottle_image = pygame.image.load("../assets/sprites/bottle.png").convert()
-        # bottle_image.set_colorkey((255, 255, 255))
-        # if bottle.shelf_num == 1:
-        #     screen.blit(bottle_image, (SCREEN_WIDTH - 40, SCREEN_HEIGHT - (187)))
-        # if bottle.shelf_num == 2:
-        #     screen.blit(bottle_image, (SCREEN_WIDTH - 40, SCREEN_HEIGHT - (187+125)))
-        # if bottle.shelf_num == 3:
-        #     screen.blit(bottle_image, (SCREEN_WIDTH - 40, SCREEN_HEIGHT - (187+250)))
         bottles.draw(screen, bottle.shelf_num)
 
      # results for bullets
@@ -87,7 +85,7 @@ while running:
                 bottles.remove(bottle)
                 add_bottles(bottle.shelf_num)
                 bullets.remove(bullet)
-                pygame.mixer.Sound.play(gunshot)
+                pygame.mixer.Sound.play(bottle_break)
 
     pygame.display.flip()
 pygame.quit()
