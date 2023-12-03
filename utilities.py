@@ -2,7 +2,7 @@ import pygame
 import random
 from game_parameters import*
 from bullet import Bullet, bullets
-from targets import Bottle, bottles
+from targets import Bottle, bottles, Chicken, chickens
 
 
 def draw_background(surf):
@@ -43,3 +43,5 @@ def add_bullets(num_bullet, pos, angle):
         bullets.add(Bullet(pos[0],pos[1], angle))
 def add_bottles(shelf_num):
     bottles.add(Bottle(shelf_num))
+def add_chickens(shelf_num):
+    chickens.add(Chicken(shelf_num))
