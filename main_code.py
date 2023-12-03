@@ -1,8 +1,9 @@
 import pygame
 import sys
 import random
+import time
 from game_parameters import *
-from utilities import draw_background, add_bullets, add_bottles, add_chickens
+from utilities import draw_background, draw_menu, add_bullets, add_bottles, add_chickens
 from bullet import bullets
 from targets import bottles, chickens
 pygame.init()
@@ -14,13 +15,13 @@ background = screen.copy()
 draw_background(background)
 # initialize fonts
 main_font = pygame.font.Font("../assets/fonts/main_font.ttf", 50)
-scroll = pygame.image.load("../assets/sprites/scroll.png").convert()
-scroll.set_colorkey((0,0,0))
+welcome_font = pygame.font.Font("../assets/fonts/main_font.ttf", 20)
+
 # initialize variables
 angle = 0
 # intialize timer
 clock = pygame.time.Clock()
-counter = 15
+counter = 25
 text = main_font.render(f"T:{str(counter)}", True, (0,0,0))
 timer_event = pygame.USEREVENT+1
 pygame.time.set_timer(timer_event, 1000)
@@ -33,7 +34,8 @@ gunshot = pygame.mixer.Sound("../assets/sounds/gunshot.mp3")
 bottle_break = pygame.mixer.Sound("../assets/sounds/bottle_break.mp3")
 chicken_death = pygame.mixer.Sound("../assets/sounds/chicken_death.mp3")
 background_music = pygame.mixer.Sound("../assets/sounds/background.mp3")
-
+scroll = pygame.image.load("../assets/sprites/scroll.png").convert()
+scroll.set_colorkey((255,255,255))
 
 # add target sprites
 add_bottles(1)
@@ -41,6 +43,27 @@ add_bottles(2)
 add_bottles(3)
 
 # main loop
+running = True
+while running:
+    draw_menu(screen)
+    line2 = welcome_font.render("Your goal is to survive for as long", True, (0,0,0))
+    line3 = welcome_font.render("as possible and reach the highest score.", True, (0,0,0))
+    line4 = welcome_font.render("Each bottle you break will give you +1 ", True, (0,0,0))
+    line5 = welcome_font.render("score and 3 more seconds of survival,", True, (0,0,0))
+    line6 = welcome_font.render("but every chicken you shoot gives you", True, (0,0,0))
+    line7 = welcome_font.render("-1 score and you lose 2 seconds of life.", True, (0,0,0))
+    line8 = welcome_font.render("Good Luck!", True, (0,0,0))
+    screen.blit(line2, (SCREEN_WIDTH / 2 - line2.get_width() / 2,  100))
+    screen.blit(line3, (SCREEN_WIDTH / 2 - line3.get_width() / 2, 150))
+    screen.blit(line4, (SCREEN_WIDTH / 2 - line4.get_width() / 2, 200))
+    screen.blit(line5, (SCREEN_WIDTH / 2 - line5.get_width() / 2, 250))
+    screen.blit(line6, (SCREEN_WIDTH / 2 - line6.get_width() / 2, 300))
+    screen.blit(line7, (SCREEN_WIDTH / 2 - line7.get_width() / 2, 350))
+    screen.blit(line8, (SCREEN_WIDTH / 2 - line8.get_width() / 2, 400))
+    pygame.display.flip()
+    time.sleep(10)
+    running = False
+
 running = True
 while running:
     # set frame speed
@@ -89,11 +112,11 @@ while running:
             bullets.remove(bullet)
         for bottle in bottles:
             bullet_bottle = pygame.sprite.spritecollide(bullet, bottles, True)
+            number_shelf = bottle.shelf_num
             if bullet_bottle:
-                counter += 2
+                counter += 3
                 score += 1
                 score_text = main_font.render(f"S:{str(score)}", True, (0, 0, 0))
-                number_shelf = bottle.shelf_num
                 bottles.remove(bottle)
                 bullets.remove(bullet)
                 pygame.mixer.Sound.play(bottle_break)
@@ -104,11 +127,11 @@ while running:
                     add_bottles(number_shelf)
         for chicken in chickens:
             bullet_chicken = pygame.sprite.spritecollide(bullet, chickens, True)
+            number_shelf = chicken.shelf_num
             if bullet_chicken:
                 counter -= 2
                 score -= 1
                 score_text = main_font.render(f"S:{str(score)}", True, (0, 0, 0))
-                number_shelf = chicken.shelf_num
                 chickens.remove(chicken)
                 bullets.remove(bullet)
                 pygame.mixer.Sound.play(chicken_death)
@@ -121,14 +144,14 @@ while running:
 
 
 screen.blit(background, (0, 0))
+screen.blit(scroll, (SCREEN_WIDTH / 4 - score_text.get_width() / 2,0))
 # show a game over message
 message = main_font.render("Game Over", True, (0, 0, 0))
-screen.blit(message, (SCREEN_WIDTH / 2 - message.get_width() / 2, SCREEN_HEIGHT / 2 -
-message.get_height() / 2))
+screen.blit(message, (SCREEN_WIDTH / 2 - message.get_width() / 2, SCREEN_HEIGHT / 2 -message.get_height() / 2))
 # show the final score
 score_text = main_font.render(f"Score: {score}", True, (0, 0, 0))
-screen.blit(score_text, (SCREEN_WIDTH / 2 - score_text.get_width() / 2,
-SCREEN_HEIGHT / 2 + message.get_height()))
+screen.blit(score_text, (SCREEN_WIDTH / 2 - score_text.get_width() / 2,SCREEN_HEIGHT / 2 + message.get_height()))
+
 
 pygame.display.flip()
 
