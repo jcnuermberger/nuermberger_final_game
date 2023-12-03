@@ -1,12 +1,10 @@
 import pygame
 import sys
 import random
-import time
 from game_parameters import *
 from utilities import draw_background, add_bullets, add_bottles, add_chickens
 from bullet import bullets
 from targets import bottles, chickens
-
 pygame.init()
 
 # make the screen dimensions
