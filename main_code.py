@@ -38,14 +38,14 @@ scroll = pygame.image.load("../assets/sprites/scroll.png").convert()
 scroll.set_colorkey((255,255,255))
 
 # add target sprites
-add_bottles(1)
-add_bottles(2)
-add_bottles(3)
+for i in range(1,4):
+    add_bottles(i)
 
 # main loop
 running = True
 while running:
     draw_menu(screen)
+    # display welcome message and instructions
     line2 = welcome_font.render("Your goal is to survive for as long", True, (0,0,0))
     line3 = welcome_font.render("as possible and reach the highest score.", True, (0,0,0))
     line4 = welcome_font.render("Each bottle you break will give you +1 ", True, (0,0,0))
@@ -61,7 +61,7 @@ while running:
     screen.blit(line7, (SCREEN_WIDTH / 2 - line7.get_width() / 2, 350))
     screen.blit(line8, (SCREEN_WIDTH / 2 - line8.get_width() / 2, 400))
     pygame.display.flip()
-    time.sleep(10)
+    time.sleep(1)
     running = False
 
 running = True
@@ -111,7 +111,8 @@ while running:
         if bullet.rect.x > SCREEN_WIDTH:
             bullets.remove(bullet)
         for bottle in bottles:
-            bullet_bottle = pygame.sprite.spritecollide(bullet, bottles, True)
+            # bullet_bottle = pygame.sprite.spritecollide(bullet, bottles, True)
+            bullet_bottle = bottle.rect.colliderect(bullet)
             number_shelf = bottle.shelf_num
             if bullet_bottle:
                 counter += 3
@@ -126,7 +127,8 @@ while running:
                 else:
                     add_bottles(number_shelf)
         for chicken in chickens:
-            bullet_chicken = pygame.sprite.spritecollide(bullet, chickens, True)
+            # bullet_chicken = pygame.sprite.spritecollide(bullet, chickens, True)
+            bullet_chicken = chicken.rect.colliderect(bullet)
             number_shelf = chicken.shelf_num
             if bullet_chicken:
                 counter -= 2
