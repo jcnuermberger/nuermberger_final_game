@@ -3,7 +3,7 @@ import sys
 import random
 import time
 from game_parameters import *
-from utilities import draw_background, draw_menu, add_bullets, add_bottles, add_chickens
+from utilities import draw_background, draw_menu, add_bullets, add_bottles, add_chickens, load_high_score, save_high_score
 from bullet import bullets
 from targets import bottles, chickens
 pygame.init()
@@ -19,15 +19,19 @@ welcome_font = pygame.font.Font("../assets/fonts/main_font.ttf", 20)
 
 # initialize variables
 angle = 0
+
 # intialize timer
 clock = pygame.time.Clock()
-counter = 25
+counter = 2
 text = main_font.render(f"T:{str(counter)}", True, (0,0,0))
 timer_event = pygame.USEREVENT+1
 pygame.time.set_timer(timer_event, 1000)
+
 # initialize score
 score = 0
 score_text = main_font.render(f"S:{str(score)}", True, (0,0,0))
+high_score = load_high_score()
+
 
 # initialize sounds
 gunshot = pygame.mixer.Sound("../assets/sounds/gunshot.mp3")
@@ -51,8 +55,9 @@ while running:
     line4 = welcome_font.render("Each bottle you break will give you +1 ", True, (0,0,0))
     line5 = welcome_font.render("score and 3 more seconds of survival,", True, (0,0,0))
     line6 = welcome_font.render("but every chicken you shoot gives you", True, (0,0,0))
-    line7 = welcome_font.render("-1 score and you lose 2 seconds of life.", True, (0,0,0))
-    line8 = welcome_font.render("Good Luck!", True, (0,0,0))
+    line7 = welcome_font.render("-1 score and you lose 4 seconds of life.", True, (0,0,0))
+    line8 = welcome_font.render(f"Can you beat the high score: {high_score}", True, (0,0,0))
+    line9 = welcome_font.render("Good Luck!", True, (0,0,0))
     screen.blit(line2, (SCREEN_WIDTH / 2 - line2.get_width() / 2,  100))
     screen.blit(line3, (SCREEN_WIDTH / 2 - line3.get_width() / 2, 150))
     screen.blit(line4, (SCREEN_WIDTH / 2 - line4.get_width() / 2, 200))
@@ -60,15 +65,17 @@ while running:
     screen.blit(line6, (SCREEN_WIDTH / 2 - line6.get_width() / 2, 300))
     screen.blit(line7, (SCREEN_WIDTH / 2 - line7.get_width() / 2, 350))
     screen.blit(line8, (SCREEN_WIDTH / 2 - line8.get_width() / 2, 400))
+    screen.blit(line9, (SCREEN_WIDTH / 2 - line9.get_width() / 2, 450))
     pygame.display.flip()
     time.sleep(1)
     running = False
 
 running = True
+pygame.mixer.Sound.play(background_music)
 while running:
     # set frame speed
     clock.tick(60)
-    pygame.mixer.Sound.play(background_music)
+
     for event in pygame.event.get():
         if event.type == pygame.event.get():
             running = False
@@ -80,7 +87,7 @@ while running:
             if event.key == pygame.K_SPACE:
                 pos = (100,450)
                 add_bullets(1, pos, angle)
-                # pygame.mixer.Sound.play(gunshot)
+                pygame.mixer.Sound.play(gunshot)
         elif event.type == timer_event:
             counter -= 1
             text = main_font.render(f"T:{str(counter)}", True, (0,0,0))
@@ -95,6 +102,8 @@ while running:
 
     # update objects
     bullets.update()
+    bottles.update()
+    chickens.update()
 
     # draw objects
     for bullet in bullets:
@@ -111,7 +120,6 @@ while running:
         if bullet.rect.x > SCREEN_WIDTH:
             bullets.remove(bullet)
         for bottle in bottles:
-            # bullet_bottle = pygame.sprite.spritecollide(bullet, bottles, True)
             bullet_bottle = bottle.rect.colliderect(bullet)
             number_shelf = bottle.shelf_num
             if bullet_bottle:
@@ -127,11 +135,10 @@ while running:
                 else:
                     add_bottles(number_shelf)
         for chicken in chickens:
-            # bullet_chicken = pygame.sprite.spritecollide(bullet, chickens, True)
             bullet_chicken = chicken.rect.colliderect(bullet)
             number_shelf = chicken.shelf_num
             if bullet_chicken:
-                counter -= 2
+                counter -= 4
                 score -= 1
                 score_text = main_font.render(f"S:{str(score)}", True, (0, 0, 0))
                 chickens.remove(chicken)
@@ -145,24 +152,26 @@ while running:
     pygame.display.flip()
 
 
+
+
 screen.blit(background, (0, 0))
+if score > high_score:
+    high_score = score
+    save_high_score(high_score)
 screen.blit(scroll, (SCREEN_WIDTH / 4 - score_text.get_width() / 2,0))
 # show a game over message
 message = main_font.render("Game Over", True, (0, 0, 0))
 screen.blit(message, (SCREEN_WIDTH / 2 - message.get_width() / 2, SCREEN_HEIGHT / 2 -message.get_height() / 2))
 # show the final score
-score_text = main_font.render(f"Score: {score}", True, (0, 0, 0))
-screen.blit(score_text, (SCREEN_WIDTH / 2 - score_text.get_width() / 2,SCREEN_HEIGHT / 2 + message.get_height()))
-
+score_text = main_font.render(f"Your score: {score}", True, (0, 0, 0))
+screen.blit(score_text, (SCREEN_WIDTH / 2 - score_text.get_width() / 2,SCREEN_HEIGHT / 4 + message.get_height()))
+high_score_text = main_font.render(f"The high score: {high_score}", True, (0,0,0))
+screen.blit(high_score_text, (SCREEN_WIDTH / 1.4 - high_score_text.get_width(), SCREEN_HEIGHT/1.5 - high_score_text.get_height()))
 
 pygame.display.flip()
 
-# play game over sound effect
-# pygame.mixer.Sound.play(bubbles)
-# wait for user to exit the game
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            # Quit Pygame
             pygame.quit()
             sys.exit()

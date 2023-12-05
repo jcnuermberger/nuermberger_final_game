@@ -65,7 +65,18 @@ def draw_menu(surf):
 def add_bullets(num_bullet, pos, angle):
     for _ in range(num_bullet):
         bullets.add(Bullet(pos[0],pos[1], angle))
-def add_bottles(shelf_num):
-    bottles.add(Bottle(shelf_num))
-def add_chickens(shelf_num):
-    chickens.add(Chicken(shelf_num))
+def add_bottles(shelf_num, xpos = SCREEN_WIDTH - 40, ypos = 0):
+    bottles.add(Bottle(shelf_num, xpos, ypos))
+def add_chickens(shelf_num, xpos = SCREEN_WIDTH - 100, ypos = 0):
+    chickens.add(Chicken(shelf_num, xpos, ypos))
+
+def load_high_score():
+    try:
+        with open("score_data.txt", "r") as file:
+            return int(file.read())
+    except FileNotFoundError:
+        return 0
+def save_high_score(score):
+    with open("score_data.txt", "w") as file:
+        file.write(str(score))
+
