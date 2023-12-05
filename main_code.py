@@ -22,7 +22,7 @@ angle = 0
 
 # intialize timer
 clock = pygame.time.Clock()
-counter = 2
+counter = 23
 text = main_font.render(f"T:{str(counter)}", True, (0,0,0))
 timer_event = pygame.USEREVENT+1
 pygame.time.set_timer(timer_event, 1000)
@@ -67,7 +67,7 @@ while running:
     screen.blit(line8, (SCREEN_WIDTH / 2 - line8.get_width() / 2, 400))
     screen.blit(line9, (SCREEN_WIDTH / 2 - line9.get_width() / 2, 450))
     pygame.display.flip()
-    time.sleep(1)
+    time.sleep(8)
     running = False
 
 running = True
