@@ -8,7 +8,7 @@ from bullet import bullets
 from targets import bottles, chickens
 pygame.init()
 
-# make the screen dimensions
+# make the screen
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 pygame.display.set_caption("Shootin' Saloon")
 background = screen.copy()
@@ -33,7 +33,7 @@ score_text = main_font.render(f"S:{str(score)}", True, (0,0,0))
 high_score = load_high_score()
 
 
-# initialize sounds
+# initialize sounds and menu tile
 gunshot = pygame.mixer.Sound("../assets/sounds/gunshot.mp3")
 bottle_break = pygame.mixer.Sound("../assets/sounds/bottle_break.mp3")
 chicken_death = pygame.mixer.Sound("../assets/sounds/chicken_death.mp3")
@@ -67,6 +67,7 @@ while running:
     screen.blit(line8, (SCREEN_WIDTH / 2 - line8.get_width() / 2, 400))
     screen.blit(line9, (SCREEN_WIDTH / 2 - line9.get_width() / 2, 450))
     pygame.display.flip()
+    # give time to read
     time.sleep(8)
     running = False
 
@@ -88,7 +89,7 @@ while running:
                 pos = (100,450)
                 add_bullets(1, pos, angle)
                 pygame.mixer.Sound.play(gunshot)
-        elif event.type == timer_event:
+        elif event.type == timer_event: #timer loop
             counter -= 1
             text = main_font.render(f"T:{str(counter)}", True, (0,0,0))
             if counter <= 0:
@@ -108,14 +109,12 @@ while running:
     # draw objects
     for bullet in bullets:
         bullet.draw_bullet(screen)
-
-    # draw bottles/chickens on shelves
     for bottle in bottles:
         bottles.draw(screen, bottle.shelf_num)
     for chicken in chickens:
         chickens.draw(screen, chicken.shelf_num)
 
-     # results for bullets
+    # results for bullets
     for bullet in bullets:
         if bullet.rect.x > SCREEN_WIDTH:
             bullets.remove(bullet)
@@ -153,8 +152,9 @@ while running:
 
 
 
-
+# game over screen
 screen.blit(background, (0, 0))
+# extract high score
 if score > high_score:
     high_score = score
     save_high_score(high_score)
@@ -170,6 +170,7 @@ screen.blit(high_score_text, (SCREEN_WIDTH / 1.4 - high_score_text.get_width(), 
 
 pygame.display.flip()
 
+# exit pygame
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
