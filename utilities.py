@@ -50,7 +50,6 @@ def draw_menu(surf):
     scroll.set_colorkey((255,255,255))
     sand_top.set_colorkey((0, 0, 0))
     cloud.set_colorkey((255, 255, 255))
-
     # make the screen
     surf.fill((190, 250, 255))
     for x in range(0, SCREEN_WIDTH, sand_top.get_width()):
@@ -61,7 +60,6 @@ def draw_menu(surf):
         surf.blit(cloud, (pos, 0))
     surf.blit(scroll, (SCREEN_WIDTH / 2 - scroll.get_width() / 2, 0))
     surf.blit(title, (SCREEN_WIDTH / 2 - title.get_width() / 2, 0))
-
 def add_bullets(num_bullet, pos, angle):
     for _ in range(num_bullet):
         bullets.add(Bullet(pos[0],pos[1], angle))
@@ -69,7 +67,6 @@ def add_bottles(shelf_num, xpos = SCREEN_WIDTH - 40, ypos = 0):
     bottles.add(Bottle(shelf_num, xpos, ypos))
 def add_chickens(shelf_num, xpos = SCREEN_WIDTH - 100, ypos = 0):
     chickens.add(Chicken(shelf_num, xpos, ypos))
-
 def load_high_score():
     try:
         with open("score_data.txt", "r") as file:
